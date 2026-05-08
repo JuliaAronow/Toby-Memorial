@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+# Upload script contains credentials — never commit
+upload-to-r2.mjs
+
+# Media assets (large files — keep locally only)
+src/assets/*
+!src/assets/.gitkeep
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

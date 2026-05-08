@@ -28,8 +28,6 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
 }
@@ -134,4 +132,28 @@ button:focus-visible {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.my-masonry-grid {
+  display: -webkit-box;
+  /* Not needed if autoprefixing */
+  display: -ms-flexbox;
+  /* Not needed if autoprefixing */
+  display: flex;
+  margin-left: -30px;
+  /* gutter size offset */
+  width: auto;
+}
+
+
+
+.my-masonry-grid {
+  display: flex;
+  gap: 1rem;
+}
+
+.my-masonry-grid_column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
