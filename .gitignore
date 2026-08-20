@@ -15,7 +15,7 @@ dist-ssr
 # Upload script contains credentials — never commit
 upload-to-r2.mjs
 
-# Media assets (large files — keep locally only)
+# Media assets (large files — keep locally only [now hosted remotely])
 src/assets/*
 !src/assets/.gitkeep
 

@@ -313,7 +313,7 @@ function App() {
         </Select>
         <Select onValueChange={(val) => {
           if (val === 'videos') {
-            document.getElementById('videos')?.scrollIntoView({ behavior: 'smooth' });
+            setPendingScrollId('videos');
             return;
           }
           const idx = flatItems.findIndex((item) => item.month === val);
@@ -345,7 +345,7 @@ function App() {
       </header>
 
       {visibleGroups.map(([month, filenames]) => (
-        <div key={month} id={month.replace(/\s/g, '-')} className="mb-8">
+        <div key={month} id={month.replace(/\s/g, '-')} className="mb-8 scroll-mt-24">
           <h2 className="text-2xl font-bold mb-4">{month}</h2>
           <Masonry
             breakpointCols={{ default: 3, 768: 2, 480: 1 }}
@@ -369,7 +369,7 @@ function App() {
       )}
 
       {videoFiles.length > 0 && (
-        <div id="videos" className="mb-8">
+        <div id="videos" className="mb-8 scroll-mt-24">
           <h2 className="text-2xl font-bold mb-4">Videos</h2>
           <Masonry
             breakpointCols={{ default: 3, 768: 2, 480: 1 }}
