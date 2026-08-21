@@ -29,3 +29,7 @@ src/assets/*
 *.njsproj
 *.sln
 *.sw?
+
+# Manifest script
+public/generate-manifest.mjs
+public/manifest_old.json

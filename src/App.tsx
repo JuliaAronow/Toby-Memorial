@@ -100,7 +100,9 @@ function ImageCard({
 }
 
 function App() {
-  const [allFiles, setAllFiles] = useState<{ filename: string; date: string | null }[]>([]);
+  const [allFiles, setAllFiles] = useState <
+  { filename: string; date: string | null; thumbnail ?: string } []
+    > ([]);
   const [groups, setGroups] = useState<Record<string, string[]>>({});
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
   const [isLoading, setIsLoading] = useState(true);
@@ -141,7 +143,7 @@ function App() {
 
         // Parse the response body as JSON. This can also throw if the
         // response isn't valid JSON, which will be caught below.
-        const entries: { filename: string; date: string | null }[] = await r.json();
+        const entries: { filename: string; date: string | null; thumbnail?: string }[] = await r.json();
 
         // If the component unmounted while we were waiting on the
         // fetch/parse above, bail out before touching state.
@@ -217,12 +219,31 @@ function App() {
     return () => observer.disconnect();
   }, [allFiles.length]);
 
-  // Handles scrolling after a "jump to month" bumps visibleCount
   useEffect(() => {
-    if (pendingScrollId) {
-      document.getElementById(pendingScrollId)?.scrollIntoView({ behavior: 'smooth' });
-      setPendingScrollId(null);
+    if (!pendingScrollId) return;
+
+    let attempts = 0;
+    const maxAttempts = 20; // bumped up since a full re-render of all images takes longer
+
+    function tryScroll() {
+      const el = document.getElementById(pendingScrollId!);
+      if (!el) {
+        attempts++;
+        if (attempts < maxAttempts) requestAnimationFrame(tryScroll);
+        return;
+      }
+      el.scrollIntoView({ behavior: 'smooth' });
     }
+
+    requestAnimationFrame(() => requestAnimationFrame(tryScroll));
+
+    const settleTimer = setTimeout(() => {
+      const el = document.getElementById(pendingScrollId!);
+      el?.scrollIntoView({ behavior: 'smooth' });
+      setPendingScrollId(null);
+    }, 600);
+
+    return () => clearTimeout(settleTimer);
   }, [visibleCount, pendingScrollId]);
 
   // While the fetch is in progress, show a spinner instead of content.
@@ -313,6 +334,7 @@ function App() {
         </Select>
         <Select onValueChange={(val) => {
           if (val === 'videos') {
+            setVisibleCount(flatItems.length); // render ALL images first
             setPendingScrollId('videos');
             return;
           }
@@ -376,13 +398,11 @@ function App() {
             className="my-masonry-grid"
             columnClassName="my-masonry-grid_column"
           >
-            {videoFiles.map(({ filename }) => (
-              <ImageCard
-                key={filename}
-                className="cursor-pointer mb-4"
-              >
+            {videoFiles.map(({ filename, thumbnail }) => (
+              <ImageCard key={filename} className="cursor-pointer mb-4">
                 <video
                   src={`${R2_BASE}/${filename}`}
+                  poster={thumbnail ? `${R2_BASE}/${thumbnail}` : undefined}
                   controls
                   preload="none"
                   className="w-full"
