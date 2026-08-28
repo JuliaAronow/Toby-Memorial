@@ -1,50 +1,49 @@
-# React + TypeScript + Vite
+# Toby Memorial
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A photo/video gallery site built with React, Vite, and Tailwind CSS. Images and videos are served from a Cloudflare R2 bucket, grouped by date, and rendered in a masonry layout with lazy loading, infinite scroll, and a lightbox.
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Node.js](https://nodejs.org/) **v20 or later**
+- [pnpm](https://pnpm.io/) — this project pins `pnpm@9.14.4` via Corepack.
+  If you have Corepack enabled, the correct pnpm version installs
+  automatically the first time you run a pnpm command:
+  ```bash
+  corepack enable
+  ```
 
-## Expanding the ESLint configuration
+## Compiling and Viewing the Site
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+1. **Install dependencies**
+   ```bash
+   pnpm install
+   ```
 
-- Configure the top-level `parserOptions` property like this:
+2. **Run it**
+   ```bash
+   pnpm dev
+   ```
+   Open `http://localhost:5173` in your browser to view the site.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+That's it — `manifest.json` (the list of photos/videos) is already included in the repo, and images/videos load directly from a public Cloudflare R2 bucket, so no extra setup or credentials are needed.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Troubleshooting
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### Windows: `pnpm : File ... cannot be loaded because running scripts is disabled on this system`
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+This is a default PowerShell security setting, not a problem with the project. PowerShell blocks `.ps1` scripts (which is how pnpm's command is installed) unless script execution is allowed.
+
+**Fix (one-time):**
+
+1. Open PowerShell **as Administrator**.
+2. Run:
+   ```powershell
+   Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+   ```
+3. Confirm with `Y` when prompted.
+4. Close and reopen your terminal, then try `pnpm install` again.
+
+**One-off alternative** (if you'd rather not change the system setting):
+```powershell
+powershell -ExecutionPolicy Bypass -Command "pnpm install"
 ```
