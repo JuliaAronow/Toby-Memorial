@@ -23,19 +23,18 @@ function LazyImage({ src }: { src: string }) {
   const [loaded, setLoaded] = useState(false);
 
   return (
-    // fixed aspect ratio so loading does not distrupt navigation
-    <div className="relative w-full aspect-square overflow-hidden rounded">
-      {!loaded && (
-        <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
-      )}
+    <div className="relative w-full overflow-hidden rounded bg-gray-200">
       <img
         src={src}
         alt=""
         loading="lazy"
         onLoad={() => setLoaded(true)}
-        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'
+        className={`block w-full h-auto rounded transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'
           }`}
       />
+      {!loaded && (
+        <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
+      )}
     </div>
   );
 }
