@@ -9,15 +9,6 @@ lerna-debug.log*
 
 node_modules
 dist
-dist-ssr
-*.local
-
-# Upload script contains credentials — never commit
-upload-to-r2.mjs
-
-# Media assets (large files — keep locally only [now hosted remotely])
-src/assets/*
-!src/assets/.gitkeep
 
 # Editor directories and files
 .vscode/*
