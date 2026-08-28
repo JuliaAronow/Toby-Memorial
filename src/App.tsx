@@ -1,5 +1,5 @@
 import Masonry from 'react-masonry-css';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Select,
   SelectContent,
@@ -114,6 +114,13 @@ function App() {
   const [pendingScrollId, setPendingScrollId] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const dimensionsByFilename = useMemo(() => {
+    const map = new Map<string, { width?: number; height?: number }>();
+    for (const f of allFiles) {
+      map.set(f.filename, { width: f.width, height: f.height });
+    }
+    return map;
+  }, [allFiles]);
   
 
   useEffect(() => {
@@ -385,8 +392,8 @@ function App() {
               >
                 <LazyImage
                   src={`${R2_BASE}/${filename}`}
-                  width={allFiles.find((f) => f.filename === filename)?.width}
-                  height={allFiles.find((f) => f.filename === filename)?.height}
+                  width={dimensionsByFilename.get(filename)?.width}
+                  height={dimensionsByFilename.get(filename)?.height}
                 />
               </ImageCard>
             ))}
