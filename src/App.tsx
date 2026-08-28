@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { MagicSelectItem } from '@/components/ui/magic-select-item';
 
 const R2_BASE = 'https://pub-b3d3886e46d8446f98e072687a965226.r2.dev';
 
@@ -328,8 +329,8 @@ function App() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="asc">Oldest first</SelectItem>
-            <SelectItem value="desc">Newest first</SelectItem>
+            <MagicSelectItem value="asc">Oldest first</MagicSelectItem>
+            <MagicSelectItem value="desc">Newest first</MagicSelectItem>
           </SelectContent>
         </Select>
         <Select onValueChange={(val) => {
@@ -352,18 +353,18 @@ function App() {
               <SelectGroup key={year}>
                 <SelectLabel>{year}</SelectLabel>
                 {months.map((monthYear) => (
-                  <SelectItem key={monthYear} value={monthYear}>
+                  <MagicSelectItem key={monthYear} value={monthYear}>
                     {monthYear.split(' ')[0]}
-                  </SelectItem>
+                  </MagicSelectItem>
                 ))}
               </SelectGroup>
             ))}
             <SelectGroup>
               <SelectLabel>Other</SelectLabel>
-              <SelectItem value="videos">Videos</SelectItem>
+              <MagicSelectItem value="videos">Videos</MagicSelectItem>
             </SelectGroup>
           </SelectContent>
-        </Select> 
+        </Select>
       </header>
 
       {visibleGroups.map(([month, filenames]) => (
