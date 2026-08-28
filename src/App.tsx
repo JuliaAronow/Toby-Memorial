@@ -4,7 +4,6 @@ import {
   Select,
   SelectContent,
   SelectGroup,
-  SelectItem,
   SelectLabel,
   SelectTrigger,
   SelectValue,
@@ -19,18 +18,22 @@ function parseGroupDate(s: string): number {
   return new Date(`${parts[0]} 1, ${parts[1]}`).getTime();
 }
 
-function LazyImage({ src }: { src: string }) {
+function LazyImage({ src, width, height }: { src: string; width?: number; height?: number }) {
   const [loaded, setLoaded] = useState(false);
+  const hasDimensions = Boolean(width && height);
 
   return (
-    <div className="relative w-full overflow-hidden rounded bg-gray-200">
+    <div
+      className="relative w-full overflow-hidden rounded bg-gray-200"
+      style={hasDimensions ? { aspectRatio: `${width} / ${height}` } : undefined}
+    >
       <img
         src={src}
         alt=""
         loading="lazy"
         onLoad={() => setLoaded(true)}
-        className={`block w-full h-auto rounded transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'
-          }`}
+        className={`rounded transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'
+          } ${hasDimensions ? 'absolute inset-0 w-full h-full object-cover' : 'block w-full h-auto'}`}
       />
       {!loaded && (
         <div className="absolute inset-0 bg-gray-200 animate-pulse rounded" />
@@ -101,7 +104,7 @@ function ImageCard({
 
 function App() {
   const [allFiles, setAllFiles] = useState <
-  { filename: string; date: string | null; thumbnail ?: string } []
+  { filename: string; date: string | null; thumbnail ?: string; width ?: number; height ?: number } []
     > ([]);
   const [groups, setGroups] = useState<Record<string, string[]>>({});
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
@@ -143,7 +146,7 @@ function App() {
 
         // Parse the response body as JSON. This can also throw if the
         // response isn't valid JSON, which will be caught below.
-        const entries: { filename: string; date: string | null; thumbnail?: string }[] = await r.json();
+        const entries: { filename: string; date: string | null; thumbnail?: string; width?: number; height?: number }[] = await r.json();
 
         // If the component unmounted while we were waiting on the
         // fetch/parse above, bail out before touching state.
@@ -375,12 +378,16 @@ function App() {
             columnClassName="my-masonry-grid_column"
           >
             {filenames.map((filename) => (
-              <ImageCard 
-              key={filename} 
-              className="cursor-pointer mb-4"
-              onClick={() => setSelectedImage(`${R2_BASE}/${filename}`)}
+              <ImageCard
+                key={filename}
+                className="cursor-pointer mb-4"
+                onClick={() => setSelectedImage(`${R2_BASE}/${filename}`)}
               >
-                <LazyImage src={`${R2_BASE}/${filename}`} />
+                <LazyImage
+                  src={`${R2_BASE}/${filename}`}
+                  width={allFiles.find((f) => f.filename === filename)?.width}
+                  height={allFiles.find((f) => f.filename === filename)?.height}
+                />
               </ImageCard>
             ))}
           </Masonry>
